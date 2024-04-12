@@ -7,7 +7,7 @@ import re
 def search_for_stock_news_urls(ticker):
     search_url = "https://www.google.com/search?q=yahoo+finance+{}&tbm=nws".format(ticker)
     headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-    r = requests.get(search_url,headers=headers,timeout=5)
+    r = requests.get(search_url,headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
     atags = soup.find_all('a')
     hrefs = [link['href'] for link in atags]
@@ -42,4 +42,4 @@ def pipeline_yfinance(monitored_tickers):
     exclude_list = ['maps', 'policies', 'preferences', 'accounts', 'support','google.com']
     cleaned_urls = {ticker:strip_unwanted_urls(raw_urls[ticker], exclude_list) for ticker in monitored_tickers}
     articles = {ticker:scrape_and_process(cleaned_urls[ticker]) for ticker in monitored_tickers}
-    return articles
+    return articles,cleaned_urls

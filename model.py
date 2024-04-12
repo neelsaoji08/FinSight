@@ -1,7 +1,8 @@
-from transformers import pipeline
+
 from transformers import PegasusTokenizer, PegasusForConditionalGeneration
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from scipy.special import softmax
+import numpy as np
 
 model_name = "human-centered-summarization/financial-summarization-pegasus"
 tokenizer = PegasusTokenizer.from_pretrained(model_name)
@@ -39,6 +40,6 @@ def pipeline_training(monitored_tickers, articles):
     for ticker, ticker_summaries in summaries.items():
         for summary in ticker_summaries:
             score = find_sentiment(summary)
-            scores[ticker].append(score)
+            scores[ticker].append(np.array(score))
 
-    return scores
+    return scores,summaries

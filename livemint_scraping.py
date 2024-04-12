@@ -23,12 +23,12 @@ def search_for_stock_news_urls(ticker):
 
 def get_news_links(news_page_url):
 
-    r = requests.get(news_page_url,headers=headers,timeout=5)
+    r = requests.get(news_page_url,headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
     d=soup.find(id='stock_news')
     news_links=[a.get('href') for a in d.find_all('a') ]
-    news_links=set(news_links)
-
+    news_links=list(set(news_links))
+    
     return news_links
 
 def scrape_and_process(URLs):
@@ -48,5 +48,5 @@ def pipeline_mint(monitored_tickers):
     raw_urls = {ticker:search_for_stock_news_urls(ticker) for ticker in monitored_tickers}
     news_urls ={ticker:get_news_links(raw_urls[ticker]) for ticker in monitored_tickers}
     articles = {ticker:scrape_and_process(news_urls[ticker]) for ticker in monitored_tickers}
-    return articles
+    return articles,news_urls
 
