@@ -8,12 +8,12 @@ import pandas as pd
 from anynewsarticle import process_url
 
 
-def download_button(name,csv):
+def download_button(name,csv,key):
     st.download_button("Press to Download",
                             csv,
                             f"{name}.csv",
                             "text/csv",
-                            key='download-csv')
+                            key=f'{key}-csv')
 
 
 st.title('Financial News Summary And Sentiment Analysis')
@@ -45,11 +45,14 @@ ticks=st.text_input(label='Stocks to Monitior')
 mint=st.checkbox(label='Scrape News from LiveMint',value=False,)
 money=st.checkbox(label='Scrape News from MoneyControl',value=False)
 yfin=st.checkbox(label='Scrape News from Yfinance',value=False)
+tickers=[]
 
 if st.button('Process Stocks'):
     
     if ticks:
         tickers=ticks.split(' ')
+
+    # print(tickers)
 
     if mint:
         articles_mint,news_urls_mint=pipeline_mint(tickers)
@@ -61,7 +64,7 @@ if st.button('Process Stocks'):
         st.dataframe(df)
 
         csv = df.to_csv(index=False)
-        download_button('Livemint',csv)
+        download_button('Livemint',csv,'mint')
 
     if money:
         articles_money,news_urls_money=pipeline_moneycontrol(tickers)
@@ -72,7 +75,7 @@ if st.button('Process Stocks'):
         st.header('Moneycontrol Articles')
         st.dataframe(df)
         csv = df.to_csv(index=False)
-        download_button('moneycontrol',csv)
+        download_button('moneycontrol',csv,'money')
 
     if yfin:
         articles_yfin,news_urls_yfin=pipeline_yfinance(tickers)
@@ -84,8 +87,8 @@ if st.button('Process Stocks'):
         st.dataframe(df)
 
         csv = df.to_csv(index=False)
-        download_button('yfinance',csv)
+        download_button('yfinance',csv,'yfinance')
 
-st.switch_page('main2.py')
+
 
 

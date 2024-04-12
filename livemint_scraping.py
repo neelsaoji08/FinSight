@@ -1,25 +1,24 @@
 from bs4 import BeautifulSoup
 import requests
+import os
+
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 
-
-def preprocess(url):
-    x=url.split('=')[5:]
-    new_url=''
-    for i in range(0,len(x)):
-        new_url+=x[i]
-    return new_url
-
 def search_for_stock_news_urls(ticker):
-    
-    url=f"https://www.google.com/search?q=mint+{ticker}+share+price"
-    r = requests.get(url,headers=headers)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    news_links=[a.get('href') for a in soup.find_all('a') 
-            if f"https://www.livemint.com/market/market-stats/stocks-" in a["href"] ]
-    news_page_url=preprocess(news_links[0])
 
-    return news_page_url
+    search_quey=f'livemint {ticker} share'
+    
+    url='https://www.googleapis.com/customsearch/v1'
+    
+    params={
+    'q':search_quey,
+    'key':os.environ['GOOGLE_API_KEY'],
+    'cx':os.environ['SEARCH_ENGINE_ID']
+    }
+    respose=requests.get(url,params=params)
+    result=respose.json()
+    if 'items' in result:
+        return result['items'][0]['link']
 
 def get_news_links(news_page_url):
 

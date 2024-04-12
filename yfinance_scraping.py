@@ -1,26 +1,37 @@
 from bs4 import BeautifulSoup
 import requests
-import re
+import os
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 
 
 
 def search_for_stock_news_urls(ticker):
-    search_url = "https://www.google.com/search?q=yahoo+finance+{}&tbm=nws".format(ticker)
-    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-    r = requests.get(search_url,headers=headers)
+
+    search_quey=f'yahoo finance {ticker}'
+    
+    url='https://www.googleapis.com/customsearch/v1'
+    
+    params={
+    'q':search_quey,
+    'key':os.environ['GOOGLE_API_KEY'],
+    'cx':os.environ['SEARCH_ENGINE_ID']
+    }
+    respose=requests.get(url,params=params)
+    result=respose.json()
+    if 'items' in result:
+        return result['items'][0]['link']
+
+
+def get_news_links(news_page_url):
+
+    r = requests.get(news_page_url,headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
-    atags = soup.find_all('a')
-    hrefs = [link['href'] for link in atags]
-    return hrefs 
-
-def strip_unwanted_urls(urls, exclude_list):
-    val = []
-    for url in urls: 
-        if 'https://' in url and not any(exclude_word in url for exclude_word in exclude_list):
-            res = re.findall(r'(https?://\S+)', url)[0].split('&')[0]
-            val.append(res)
-    return list(set(val))
-
+    d=soup.find(id='Main')
+    news_links = [a.get('href') for a in d.find_all('a') if a.get('href') and '/news/'  in a.get('href')]
+    for i in range(0,len(news_links)):
+        news_links[i]='https://finance.yahoo.com'+news_links[i]
+    return news_links
 
 def scrape_and_process(URLs):
     ARTICLES = []
@@ -34,12 +45,9 @@ def scrape_and_process(URLs):
         ARTICLES.append(ARTICLE)
     return ARTICLES
 
-
-
 def pipeline_yfinance(monitored_tickers):
 
     raw_urls = {ticker:search_for_stock_news_urls(ticker) for ticker in monitored_tickers}
-    exclude_list = ['maps', 'policies', 'preferences', 'accounts', 'support','google.com']
-    cleaned_urls = {ticker:strip_unwanted_urls(raw_urls[ticker], exclude_list) for ticker in monitored_tickers}
-    articles = {ticker:scrape_and_process(cleaned_urls[ticker]) for ticker in monitored_tickers}
-    return articles,cleaned_urls
+    news_urls ={ticker:get_news_links(raw_urls[ticker]) for ticker in monitored_tickers}
+    articles = {ticker:scrape_and_process(news_urls[ticker]) for ticker in monitored_tickers}
+    return articles,news_urls
