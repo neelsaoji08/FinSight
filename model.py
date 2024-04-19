@@ -24,7 +24,7 @@ def summarize(articles):
     summaries = []
     for article in articles:
         input_ids = tokenizer.encode(article, return_tensors='pt')
-        output = model.generate(input_ids, max_length=55,
+        output = model.generate(input_ids, max_length=100,
                                 num_beams=5, early_stopping=True)
         summary = tokenizer.decode(output[0], skip_special_tokens=True)
         summaries.append(summary)
