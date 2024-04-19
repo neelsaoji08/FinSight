@@ -1,0 +1,13 @@
+transformers
+numpy
+pandas
+scikit-learn
+bs4
+requests
+scipy
+evaluate 
+peft
+torch
+scikit-learn
+tqdm
+streamlit
