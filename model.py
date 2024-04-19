@@ -2,16 +2,22 @@
 from transformers import PegasusTokenizer, PegasusForConditionalGeneration
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from scipy.special import softmax
+from transformers import AutoTokenizer,AutoModelForSequenceClassification
+from peft import get_peft_model, LoraConfig
 import numpy as np
 
 model_name = "human-centered-summarization/financial-summarization-pegasus"
 tokenizer = PegasusTokenizer.from_pretrained(model_name)
 model = PegasusForConditionalGeneration.from_pretrained(model_name)
 
-tokenizer_sentiment = AutoTokenizer.from_pretrained(
-    "cardiffnlp/twitter-roberta-base-sentiment-latest")
-model_sentiment = AutoModelForSequenceClassification.from_pretrained(
-    "cardiffnlp/twitter-roberta-base-sentiment-latest")
+
+tokenizer_sentiment = AutoTokenizer.from_pretrained("ahmedrachid/FinancialBERT-Sentiment-Analysis")
+model_sentiment = AutoModelForSequenceClassification.from_pretrained("ahmedrachid/FinancialBERT-Sentiment-Analysis", num_labels=3)
+lora_config = LoraConfig.from_pretrained('models/FinancialBert')
+model_sentiment = get_peft_model(model_sentiment, lora_config)
+
+
+
 
 
 def summarize(articles):
