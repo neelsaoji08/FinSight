@@ -21,12 +21,12 @@ This project focuses on sentiment analysis for financial news using a pre-traine
 5. **Run Fine-tuning Notebook**
    - Open and run the `fine-tuning-sentiment.ipynb` file.
    - This notebook will fine-tune the language model using the financial news dataset.
-   - After execution, it will create the necessary files in the `model` folder.
+   - After execution, it will create the necessary files in the `models` folder.
 
 6. **Run `main.py`**
    - After fine-tuning the language model, you can run the `main.py` file.
    - This script utilizes the fine-tuned model to perform sentiment analysis on financial news.
-   - Ensure that the `model` folder contains the required files generated during fine-tuning.
+   - Ensure that the `models` folder contains the required files generated during fine-tuning.
 
 7. **Review Results**
    - After running `main.py`, review the sentiment analysis results produced by the model.
