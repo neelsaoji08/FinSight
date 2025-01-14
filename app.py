@@ -44,7 +44,7 @@ ticks=st.text_input(label='Stocks to Monitior')
 
 mint=st.checkbox(label='Scrape News from LiveMint',value=False,)
 money=st.checkbox(label='Scrape News from MoneyControl',value=False)
-yfin=st.checkbox(label='Scrape News from Yfinance',value=False)
+# yfin=st.checkbox(label='Scrape News from Yfinance',value=False)
 tickers=[]
 
 if st.button('Process Stocks'):
@@ -59,7 +59,7 @@ if st.button('Process Stocks'):
         scores_mint,summaries_mint=pipeline_training(tickers,articles_mint)
         output=create_output_array(summaries_mint,scores_mint,news_urls_mint,tickers)
         df=pd.DataFrame(output)
-        df.columns=['Stock','Summary','Scores','Sentiment','link']
+        df.columns=['Stock','Summary','Scores','Sentiment','link','max_score']
         st.header('LiveMint Articles')
         st.dataframe(df)
 
@@ -71,23 +71,23 @@ if st.button('Process Stocks'):
         scores_money,summaries_money=pipeline_training(tickers,articles_money)
         output=create_output_array(summaries_money,scores_money,news_urls_money,tickers)
         df=pd.DataFrame(output)
-        df.columns=['Stock','Summary','Scores','Sentiment','link']
+        df.columns=['Stock','Summary','Scores','Sentiment','link','max_score']
         st.header('Moneycontrol Articles')
         st.dataframe(df)
         csv = df.to_csv(index=False)
         download_button('moneycontrol',csv,'money')
 
-    if yfin:
-        articles_yfin,news_urls_yfin=pipeline_yfinance(tickers)
-        scores_yfin,summaries_yfin=pipeline_training(tickers,articles_yfin)
-        output=create_output_array(summaries_yfin,scores_yfin,news_urls_yfin,tickers)
-        df=pd.DataFrame(output)
-        st.header('Yfinance Articles')
-        df.columns=['Stock','Summary','Scores','Sentiment','link']
-        st.dataframe(df)
+    # if yfin:
+    #     articles_yfin,news_urls_yfin=pipeline_yfinance(tickers)
+    #     scores_yfin,summaries_yfin=pipeline_training(tickers,articles_yfin)
+    #     output=create_output_array(summaries_yfin,scores_yfin,news_urls_yfin,tickers)
+    #     df=pd.DataFrame(output)
+    #     st.header('Yfinance Articles')
+    #     df.columns=['Stock','Summary','Scores','Sentiment','link']
+    #     st.dataframe(df)
 
-        csv = df.to_csv(index=False)
-        download_button('yfinance',csv,'yfinance')
+    #     csv = df.to_csv(index=False)
+    #     download_button('yfinance',csv,'yfinance')
 
 
 

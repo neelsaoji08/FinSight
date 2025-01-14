@@ -6,12 +6,16 @@ def create_output_array(summaries, scores, urls,monitored_tickers):
     output = []
     for ticker in monitored_tickers:
         for counter in range(len(summaries[ticker])):
+            
             output_this = [
                 ticker,
                 summaries[ticker][counter],
                 scores[ticker][counter],
                 senti[scores[ticker][counter].argmax()],
-                urls[ticker][counter]
+                urls[ticker][counter],
+                scores[ticker][counter].max()
             ]
+                
             output.append(output_this)
+        
     return output

@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-import os
+import streamlit as st
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
@@ -15,8 +15,8 @@ def search_for_stock_news_urls(ticker):
     
     params={
     'q':search_quey,
-    'key':os.environ['GOOGLE_API_KEY'],
-    'cx':os.environ['SEARCH_ENGINE_ID']
+    'key':st.secrets['GOOGLE_API_KEY'],
+    'cx':st.secrets['SEARCH_ENGINE_ID']
     }
     respose=requests.get(url,params=params)
     result=respose.json()

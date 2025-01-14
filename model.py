@@ -2,7 +2,6 @@
 from transformers import PegasusTokenizer, PegasusForConditionalGeneration
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from scipy.special import softmax
-from transformers import AutoTokenizer,AutoModelForSequenceClassification
 from peft import get_peft_model, LoraConfig
 import numpy as np
 
@@ -11,13 +10,12 @@ tokenizer = PegasusTokenizer.from_pretrained(model_name)
 model = PegasusForConditionalGeneration.from_pretrained(model_name)
 
 
-tokenizer_sentiment = AutoTokenizer.from_pretrained("ahmedrachid/FinancialBERT-Sentiment-Analysis")
-model_sentiment = AutoModelForSequenceClassification.from_pretrained("ahmedrachid/FinancialBERT-Sentiment-Analysis", num_labels=3)
+tokenizer_sentiment = AutoTokenizer.from_pretrained(
+    "ahmedrachid/FinancialBERT-Sentiment-Analysis")
+model_sentiment = AutoModelForSequenceClassification.from_pretrained(
+    "ahmedrachid/FinancialBERT-Sentiment-Analysis", num_labels=3)
 lora_config = LoraConfig.from_pretrained('models/FinancialBert')
 model_sentiment = get_peft_model(model_sentiment, lora_config)
-
-
-
 
 
 def summarize(articles):
@@ -32,7 +30,8 @@ def summarize(articles):
 
 
 def find_sentiment(text):
-    encoded_input = tokenizer_sentiment(text,padding=True,truncation=True ,return_tensors='pt')
+    encoded_input = tokenizer_sentiment(
+        text, padding=True, truncation=True, return_tensors='pt')
     output = model_sentiment(**encoded_input)
     scores = output[0][0].detach().numpy()
     scores = softmax(scores)
@@ -40,7 +39,8 @@ def find_sentiment(text):
 
 
 def pipeline_training(monitored_tickers, articles):
-    summaries = {ticker: summarize(articles[ticker]) for ticker in monitored_tickers}
+    summaries = {ticker: summarize(articles[ticker])
+                 for ticker in monitored_tickers}
     scores = {ticker: [] for ticker in monitored_tickers}
 
     for ticker, ticker_summaries in summaries.items():
@@ -48,4 +48,4 @@ def pipeline_training(monitored_tickers, articles):
             score = find_sentiment(summary)
             scores[ticker].append(np.array(score))
 
-    return scores,summaries
+    return scores, summaries
