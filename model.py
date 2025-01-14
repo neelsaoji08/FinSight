@@ -21,7 +21,7 @@ model_sentiment = get_peft_model(model_sentiment, lora_config)
 def summarize(articles):
     summaries = []
     for article in articles:
-        input_ids = tokenizer.encode(article, return_tensors='pt')
+        input_ids = tokenizer.encode(article, return_tensors='pt',max_length=tokenizer.model_max_length,truncation=True)
         output = model.generate(input_ids, max_length=100,
                                 num_beams=5, early_stopping=True)
         summary = tokenizer.decode(output[0], skip_special_tokens=True)
