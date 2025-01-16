@@ -20,7 +20,9 @@ def search_for_stock_news_urls(ticker):
     }
     respose=requests.get(url,params=params)
     result=respose.json()
+    
     if 'items' in result:
+        print(result['items'][0]['link'])
         return result['items'][0]['link']
 
 
