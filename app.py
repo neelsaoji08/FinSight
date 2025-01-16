@@ -38,7 +38,7 @@ for i in range(3):
 process_url_clicked = st.sidebar.button("Process URLs")
 
 if process_url_clicked:
-    df = process_url(urls)  # Assuming 'process_url' is a defined function
+    df = process_url(urls)  
     st.sidebar.dataframe(df)
     csv = df.to_csv(index=False)
     st.sidebar.download_button(
@@ -58,9 +58,9 @@ if st.button('Process Stocks'):
     if ticks:
         tickers = ticks.split(' ')
     if mint:
-        articles_mint, news_urls_mint = pipeline_mint(tickers)  # Assuming 'pipeline_mint' is defined
-        scores_mint, summaries_mint = pipeline_training(tickers, articles_mint)  # Assuming 'pipeline_training' is defined
-        output = create_output_array(summaries_mint, scores_mint, news_urls_mint, tickers)  # Assuming 'create_output_array' is defined
+        articles_mint, news_urls_mint = pipeline_mint(tickers)  
+        scores_mint, summaries_mint = pipeline_training(tickers, articles_mint)  
+        output = create_output_array(summaries_mint, scores_mint, news_urls_mint, tickers)  
         df = pd.DataFrame(output)
         df.columns = ['Stock', 'Summary', 'Scores', 'Sentiment', 'link', 'max_score']
         st.header('LiveMint Articles')
@@ -70,7 +70,7 @@ if st.button('Process Stocks'):
 
 
     if money:
-        articles_money, news_urls_money = pipeline_moneycontrol(tickers)  # Assuming 'pipeline_moneycontrol' is defined
+        articles_money, news_urls_money = pipeline_moneycontrol(tickers)  
         scores_money, summaries_money = pipeline_training(tickers, articles_money)
         output = create_output_array(summaries_money, scores_money, news_urls_money, tickers)
         df = pd.DataFrame(output)
