@@ -19,6 +19,7 @@ def search_for_stock_news_urls(ticker):
     result=respose.json()
     if 'items' in result:
         return result['items'][0]['link']
+    
 
 def get_news_links(news_page_url):
 
